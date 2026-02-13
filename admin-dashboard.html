@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم الإدارية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            direction: rtl;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 1.8em;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        /* Main Container */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Statistics Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* Section */
+        .dashboard-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Product Form */
+        .product-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #95afc0;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #778ca3;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+        }
+
+        /* Orders Table */
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .orders-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .orders-table th,
+        .orders-table td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .orders-table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .orders-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-processing {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-shipping {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Products List */
+        .products-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .product-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .product-item:hover {
+            background: #e9ecef;
+            transform: translateY(-3px);
+        }
+
+        .product-item h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .product-item p {
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-form {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .orders-table {
+                font-size: 0.9em;
+            }
+
+            .orders-table th,
+            .orders-table td {
+                padding: 10px;
+            }
+
+            .products-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="admin-header">
+        <div class="header-content">
+            <div class="header-title">
+                <i class="fas fa-user-shield"></i>
+                <h1>لوحة التحكم الإدارية</h1>
+            </div>
+            <div class="header-actions">
+                <div class="header-user">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="adminName">المدير</span>
+                </div>
+                <a href="index.html" class="logout-btn">
+                    <i class="fas fa-store"></i>
+                    المتجر
+                </a>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="dashboard-container">
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                <div class="stat-number" id="totalOrders">248</div>
+                <div class="stat-label">إجمالي الطلبات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="stat-number" id="totalRevenue">125,500</div>
+                <div class="stat-label">الإيرادات (درهم)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-number" id="totalCustomers">2,543</div>
+                <div class="stat-label">عدد العملاء</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-box"></i></div>
+                <div class="stat-number" id="totalProducts">156</div>
+                <div class="stat-label">المنتجات المتاحة</div>
+            </div>
+        </div>
+
+        <!-- Add Product -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-plus-circle"></i>
+                    إضافة منتج جديد
+                </h2>
+            </div>
+            <form class="product-form" onsubmit="addProduct(event)">
+                <div class="form-group">
+                    <label>اسم المنتج</label>
+                    <input type="text" id="productName" required placeholder="أدخل اسم المنتج">
+                </div>
+                <div class="form-group">
+                    <label>السعر (درهم)</label>
+                    <input type="number" id="productPrice" required placeholder="1200">
+                </div>
+                <div class="form-group">
+                    <label>السعر القديم (اختياري)</label>
+                    <input type="number" id="productOldPrice" placeholder="1650">
+                </div>
+                <div class="form-group">
+                    <label>رابط الصورة</label>
+                    <input type="url" id="productImage" required placeholder="https://...">
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>الوصف</label>
+                    <textarea id="productDescription" rows="3" required placeholder="وصف المنتج..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>الشارة (اختياري)</label>
+                    <input type="text" id="productBadge" placeholder="جديد، خصم 40%">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> إضافة المنتج
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> إعادة تعيين
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-clipboard-list"></i>
+                    الطلبات الأخيرة
+                </h2>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>العميل</th>
+                            <th>المنتج</th>
+                            <th>المبلغ</th>
+                            <th>التاريخ</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <tr>
+                            <td>#10234</td>
+                            <td>محمد أحمد</td>
+                            <td>ساعة كلاسيكية فاخرة</td>
+                            <td>1,200 درهم</td>
+                            <td>2026-02-13</td>
+                            <td><span class="status-badge status-completed">مكتمل</span></td>
+                        </tr>
+                        <tr>
+                            <td>#10233</td>
+                            <td>فاطمة الزهراء</td>
+                            <td>ساعة نسائية أنيقة</td>
+                            <td>1,450 درهم</td>
+                            <td>2026-02-13</td>
+                            <td><span class="status-badge status-processing">قيد المعالجة</span></td>
+                        </tr>
+                        <tr>
+                            <td>#10232</td>
+                            <td>عمر خالد</td>
+                            <td>ساعة رياضية ذكية</td>
+                            <td>950 درهم</td>
+                            <td>2026-02-12</td>
+                            <td><span class="status-badge status-shipping">قيد التوصيل</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-cog"></i>
+                    إعدادات المتجر
+                </h2>
+            </div>
+            <div class="product-form">
+                <div class="form-group">
+                    <label>رقم الواتساب</label>
+                    <input type="tel" value="+212771760099" id="whatsappNumber">
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" value="Brahimttr222@gmail.com" id="emailAddress">
+                </div>
+                <div class="form-group">
+                    <label>حساب الانستغرام</label>
+                    <input type="text" value="brahim._1_" id="instagramAccount">
+                </div>
+                <div class="form-group">
+                    <label>العنوان</label>
+                    <input type="text" value="أكادير، المغرب" id="storeAddress">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" onclick="saveSettings()">
+                        <i class="fas fa-save"></i> حفظ الإعدادات
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // التحقق من تسجيل الدخول
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+
+        // عرض اسم المدير
+        const adminName = localStorage.getItem('adminUsername') || 'المدير';
+        document.getElementById('adminName').textContent = adminName;
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                localStorage.removeItem('adminLoggedIn');
+                localStorage.removeItem('adminUsername');
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        // إضافة منتج
+        function addProduct(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('productName').value;
+            const price = document.getElementById('productPrice').value;
+            const oldPrice = document.getElementById('productOldPrice').value;
+            const image = document.getElementById('productImage').value;
+            const description = document.getElementById('productDescription').value;
+            const badge = document.getElementById('productBadge').value;
+
+            alert(`تمت إضافة المنتج بنجاح! ✅\n\nالمنتج: ${name}\nالسعر: ${price} درهم`);
+            
+            event.target.reset();
+            
+            // تحديث عدد المنتجات
+            const totalProducts = document.getElementById('totalProducts');
+            totalProducts.textContent = parseInt(totalProducts.textContent) + 1;
+        }
+
+        // حفظ الإعدادات
+        function saveSettings() {
+            const whatsapp = document.getElementById('whatsappNumber').value;
+            const email = document.getElementById('emailAddress').value;
+            const instagram = document.getElementById('instagramAccount').value;
+            const address = document.getElementById('storeAddress').value;
+
+            alert('تم حفظ الإعدادات بنجاح! ✅');
+        }
+
+        // تحديث الإحصائيات (محاكاة)
+        setInterval(() => {
+            const orders = Math.floor(Math.random() * 50) + 230;
+            const revenue = (Math.random() * 50000 + 100000).toFixed(0);
+            const customers = Math.floor(Math.random() * 200) + 2400;
+            
+            document.getElementById('totalOrders').textContent = orders;
+            document.getElementById('totalRevenue').textContent = revenue.toLocaleString();
+            document.getElementById('totalCustomers').textContent = customers.toLocaleString();
+        }, 5000);
+    </script>
+
+</body>
+</html>
