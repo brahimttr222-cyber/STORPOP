@@ -1,0 +1,16 @@
+# robots.txt for Luxury Watches Store
+
+User-agent: *
+Allow: /
+
+# Pages to index
+Allow: /index.html
+Allow: /privacy-policy.html
+Allow: /terms-conditions.html
+
+# Prevent indexing of admin pages
+Disallow: /admin-login.html
+Disallow: /admin-dashboard.html
+
+# Sitemap
+Sitemap: https://yourwebsite.com/sitemap.xml
